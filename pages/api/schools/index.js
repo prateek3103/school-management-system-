@@ -17,7 +17,7 @@ export const config = {
 
 export default async function handler(req, res) {
   // FINAL FIX: Use the correct database name
-  const dbName = '`school_db`';
+  const dbName = '`prateek-gupta-noum`';
 
   if (req.method === 'GET') {
     try {
