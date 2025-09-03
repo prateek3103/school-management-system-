@@ -3,13 +3,15 @@ import Link from 'next/link';
 import { MapPin, Edit, Phone, Mail } from 'lucide-react';
 
 export default function SchoolCard({ school }) {
+   const placeholderImage = "https://media.gettyimages.com/id/171306436/photo/red-brick-high-school-building-exterior.jpg?s=612x612&w=gi&k=20&c=8to_zwGxxcI1iYcix7DhmWahoDTlaqxEMzumDwJtxeg=";
   return (
     <div className="card-elevated overflow-hidden transition-all duration-500 hover:scale-105 group">
       {/* Image Section */}
       <div className="relative h-48 overflow-hidden">
         <Image
           // Use the full school.image URL directly
-          src={school.image || '/api/placeholder/400/300'}
+          src={school.image || placeholderImage}
+          // src={school.image || '/api/placeholder/400/300'}
           alt={school.name}
           fill
           className="object-cover group-hover:scale-110 transition-transform duration-700"
