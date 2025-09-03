@@ -11,7 +11,8 @@ export const config = {
 
 export default async function handler(req, res) {
   const { id } = req.query;
-  const dbName = '`school_db`'; // Correct database name
+  // FINAL FIX: Changed to the correct database name
+  const dbName = '`school_db`'; 
 
   if (req.method === 'GET') {
     try {
@@ -26,11 +27,12 @@ export default async function handler(req, res) {
     }
   } else if (req.method === 'PUT') {
     // IMPORTANT: This block will still fail on Vercel due to file system writes.
+    // You must replace the 'fs' logic with a cloud storage service.
     try {
       const form = formidable({
         uploadDir: './public/schoolImages',
         keepExtensions: true,
-        maxFileSize: 10 * 1024 * 1024,
+        maxFileSize: 10 * 1024 * 1024, // 10MB
       });
 
       const [fields, files] = await form.parse(req);
@@ -59,7 +61,7 @@ export default async function handler(req, res) {
         imageName = `school_${timestamp}${ext}`;
         const newPath = `./public/schoolImages/${imageName}`;
         
-        fs.renameSync(file.filepath, newPath);
+        fs.renameSync(file.filepath, newPath); // This line will cause an error on Vercel
 
         await db.execute(
           `UPDATE ${dbName}.\`schools\` SET name = ?, address = ?, city = ?, state = ?, contact = ?, image = ?, email_id = ? WHERE id = ?`,
@@ -99,7 +101,6 @@ export default async function handler(req, res) {
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
-
 
 
 // import db from '../../../lib/db';
