@@ -10,11 +10,12 @@ export const config = {
 };
 
 export default async function handler(req, res) {
-  // FINAL FIX: Changed to the correct database name
-  const dbName = '`school_db`';
+  // Define your database name once to use in all queries
+  const dbName = '`prateek-gupta-noum`';
 
   if (req.method === 'GET') {
     try {
+      // SQL FIX: Added database name to the query
       const [rows] = await db.execute(`SELECT * FROM ${dbName}.\`schools\` ORDER BY created_at DESC`);
       res.status(200).json(rows);
     } catch (error) {
@@ -57,6 +58,7 @@ export default async function handler(req, res) {
         fs.renameSync(file.filepath, newPath);
       }
 
+      // SQL FIX: Added database name to the query
       const [result] = await db.execute(
         `INSERT INTO ${dbName}.\`schools\` (name, address, city, state, contact, image, email_id) VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [name, address, city, state, contact, imageName, email_id]
@@ -72,7 +74,6 @@ export default async function handler(req, res) {
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
-
 
 // import db from '../../../lib/db';
 // import formidable from 'formidable';
