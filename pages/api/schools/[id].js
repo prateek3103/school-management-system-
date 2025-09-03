@@ -11,8 +11,7 @@ export const config = {
 
 export default async function handler(req, res) {
   const { id } = req.query;
-  // FINAL FIX: Changed to the correct database name
-  const dbName = '`school_db`'; 
+  const dbName = '`school_db`'; // Correct database name
 
   if (req.method === 'GET') {
     try {
@@ -27,20 +26,79 @@ export default async function handler(req, res) {
     }
   } else if (req.method === 'PUT') {
     // IMPORTANT: This block will still fail on Vercel due to file system writes.
-    // You must replace the 'fs' logic with a cloud storage service.
     try {
       const form = formidable({
         uploadDir: './public/schoolImages',
         keepExtensions: true,
-        maxFileSize: 10 * 1024 * 1024, // 10MB
+        maxFileSize: 10 * 1024 * 1024,
       });
 
       const [fields, files] = await form.parse(req);
 
       const name = Array.isArray(fields.name) ? fields.name[0] : fields.name;
       const address = Array.isArray(fields.address) ? fields.address[0] : fields.address;
-      const city
+      const city = Array.isArray(fields.city) ? fields.city[0] : fields.city;
+      const state = Array.isArray(fields.state) ? fields.state[0] : fields.state;
+      const contact = Array.isArray(fields.contact) ? fields.contact[0] : fields.contact;
+      const email_id = Array.isArray(fields.email_id) ? fields.email_id[0] : fields.email_id;
 
+      let imageName = null;
+      if (files.image && files.image[0]) {
+        const [currentSchool] = await db.execute(`SELECT image FROM ${dbName}.\`schools\` WHERE id = ?`, [id]);
+        
+        if (currentSchool[0]?.image) {
+          const oldImagePath = `./public/schoolImages/${currentSchool[0].image}`;
+          if (fs.existsSync(oldImagePath)) {
+            fs.unlinkSync(oldImagePath);
+          }
+        }
+
+        const file = files.image[0];
+        const timestamp = Date.now();
+        const ext = path.extname(file.originalFilename);
+        imageName = `school_${timestamp}${ext}`;
+        const newPath = `./public/schoolImages/${imageName}`;
+        
+        fs.renameSync(file.filepath, newPath);
+
+        await db.execute(
+          `UPDATE ${dbName}.\`schools\` SET name = ?, address = ?, city = ?, state = ?, contact = ?, image = ?, email_id = ? WHERE id = ?`,
+          [name, address, city, state, contact, imageName, email_id, id]
+        );
+      } else {
+        await db.execute(
+          `UPDATE ${dbName}.\`schools\` SET name = ?, address = ?, city = ?, state = ?, contact = ?, email_id = ? WHERE id = ?`,
+          [name, address, city, state, contact, email_id, id]
+        );
+      }
+
+      res.status(200).json({ message: 'School updated successfully' });
+    } catch (error) {
+      console.error('Error updating school:', error);
+      res.status(500).json({ error: 'Failed to update school' });
+    }
+  } else if (req.method === 'DELETE') {
+    try {
+      const [currentSchool] = await db.execute(`SELECT image FROM ${dbName}.\`schools\` WHERE id = ?`, [id]);
+
+      if (currentSchool[0]?.image) {
+        const imagePath = `./public/schoolImages/${currentSchool[0].image}`;
+        if (fs.existsSync(imagePath)) {
+          fs.unlinkSync(imagePath);
+        }
+      }
+
+      await db.execute(`DELETE FROM ${dbName}.\`schools\` WHERE id = ?`, [id]);
+      res.status(200).json({ message: 'School deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting school:', error);
+      res.status(500).json({ error: 'Failed to delete school' });
+    }
+  } else {
+    res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
+  }
+}
 
 
 
