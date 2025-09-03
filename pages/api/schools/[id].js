@@ -28,7 +28,7 @@ const getPublicId = (imageUrl) => {
 
 export default async function handler(req, res) {
   const { id } = req.query;
-  const dbName = '`school_db`'; // Correct database name
+  const dbName = '`prateek-gupta-noum`'; // Correct database name
 
   if (req.method === 'GET') {
     try {
