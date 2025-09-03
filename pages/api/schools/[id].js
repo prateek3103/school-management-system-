@@ -15,14 +15,12 @@ export const config = {
   },
 };
 
-// A more robust helper function to get the public ID from a Cloudinary URL
+// Helper function to extract the public ID from a Cloudinary URL
 const getPublicId = (imageUrl) => {
   try {
     const urlParts = imageUrl.split('/');
     const uploadIndex = urlParts.indexOf('upload');
-    // Slice from the part after 'upload' to the end, then join
     const publicIdWithVersion = urlParts.slice(uploadIndex + 2).join('/');
-    // Remove the file extension
     const publicId = publicIdWithVersion.substring(0, publicIdWithVersion.lastIndexOf('.'));
     return publicId;
   } catch (e) {
@@ -33,13 +31,26 @@ const getPublicId = (imageUrl) => {
 
 export default async function handler(req, res) {
   const { id } = req.query;
-  const dbName = '`prateek-gupta-noum`';
+  const dbName = '`prateek-gupta-noum`'; // Correct database name
 
   if (req.method === 'GET') {
-    // ... (GET logic remains the same)
+    try {
+      const [rows] = await db.execute(`SELECT * FROM ${dbName}.\`schools\` WHERE id = ?`, [id]);
+      if (rows.length === 0) {
+        return res.status(404).json({ error: 'School not found' });
+      }
+      res.status(200).json(rows[0]);
+    } catch (error) {
+      console.error('Error fetching school:', error);
+      res.status(500).json({ error: 'Failed to fetch school' });
+    }
   } else if (req.method === 'PUT') {
     try {
-      const form = formidable({ maxFileSize: 10 * 1024 * 1024, keepExtensions: true });
+      const form = formidable({
+        maxFileSize: 10 * 1024 * 1024,
+        keepExtensions: true,
+      });
+
       const [fields, files] = await form.parse(req);
 
       const name = Array.isArray(fields.name) ? fields.name[0] : fields.name;
@@ -83,7 +94,6 @@ export default async function handler(req, res) {
       res.status(500).json({ error: 'Failed to update school' });
     }
   } else if (req.method === 'DELETE') {
-    // ... (DELETE logic remains the same, but will benefit from the robust getPublicId)
     try {
         const [currentSchool] = await db.execute(`SELECT image FROM ${dbName}.\`schools\` WHERE id = ?`, [id]);
   
@@ -102,7 +112,7 @@ export default async function handler(req, res) {
       }
   } else {
     res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
-    res.status(4is not).end(`Method ${req.method} Not Allowed`);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
 
