@@ -11,11 +11,11 @@ export const config = {
 
 export default async function handler(req, res) {
   const { id } = req.query;
-  // FINAL FIX: Changed to the correct database name
-  const dbName = '`school_db`'; 
+  const dbName = '`prateek-gupta-noum`'; // Define database name once
 
   if (req.method === 'GET') {
     try {
+      // SQL FIX: Added database name
       const [rows] = await db.execute(`SELECT * FROM ${dbName}.\`schools\` WHERE id = ?`, [id]);
       if (rows.length === 0) {
         return res.status(404).json({ error: 'School not found' });
@@ -30,7 +30,8 @@ export default async function handler(req, res) {
     // You must replace the 'fs' logic with a cloud storage service.
     try {
       const form = formidable({
-        uploadDir: './public/schoolImages',
+        // This will not work on Vercel's read-only file system
+        uploadDir: './public/schoolImages', 
         keepExtensions: true,
         maxFileSize: 10 * 1024 * 1024, // 10MB
       });
@@ -46,8 +47,10 @@ export default async function handler(req, res) {
 
       let imageName = null;
       if (files.image && files.image[0]) {
+        // SQL FIX: Added database name
         const [currentSchool] = await db.execute(`SELECT image FROM ${dbName}.\`schools\` WHERE id = ?`, [id]);
         
+        // This file system logic will fail on Vercel
         if (currentSchool[0]?.image) {
           const oldImagePath = `./public/schoolImages/${currentSchool[0].image}`;
           if (fs.existsSync(oldImagePath)) {
@@ -63,11 +66,13 @@ export default async function handler(req, res) {
         
         fs.renameSync(file.filepath, newPath); // This line will cause an error on Vercel
 
+        // SQL FIX: Added database name
         await db.execute(
           `UPDATE ${dbName}.\`schools\` SET name = ?, address = ?, city = ?, state = ?, contact = ?, image = ?, email_id = ? WHERE id = ?`,
           [name, address, city, state, contact, imageName, email_id, id]
         );
       } else {
+        // SQL FIX: Added database name
         await db.execute(
           `UPDATE ${dbName}.\`schools\` SET name = ?, address = ?, city = ?, state = ?, contact = ?, email_id = ? WHERE id = ?`,
           [name, address, city, state, contact, email_id, id]
@@ -81,8 +86,10 @@ export default async function handler(req, res) {
     }
   } else if (req.method === 'DELETE') {
     try {
+      // SQL FIX: Added database name
       const [currentSchool] = await db.execute(`SELECT image FROM ${dbName}.\`schools\` WHERE id = ?`, [id]);
 
+      // This file system logic will fail on Vercel
       if (currentSchool[0]?.image) {
         const imagePath = `./public/schoolImages/${currentSchool[0].image}`;
         if (fs.existsSync(imagePath)) {
@@ -90,6 +97,7 @@ export default async function handler(req, res) {
         }
       }
 
+      // SQL FIX: Added database name
       await db.execute(`DELETE FROM ${dbName}.\`schools\` WHERE id = ?`, [id]);
       res.status(200).json({ message: 'School deleted successfully' });
     } catch (error) {
