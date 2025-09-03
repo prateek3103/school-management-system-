@@ -8,7 +8,7 @@ export default function SchoolCard({ school }) {
       {/* Image Section */}
       <div className="relative h-48 overflow-hidden">
         <Image
-          // THIS IS THE FIX: Use the full school.image URL directly
+          // Use the full school.image URL directly
           src={school.image || '/api/placeholder/400/300'}
           alt={school.name}
           fill
