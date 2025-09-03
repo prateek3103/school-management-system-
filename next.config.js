@@ -2,14 +2,32 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['localhost'],
+    // remotePatterns is the new, recommended way to whitelist domains.
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: 'res.cloudinary.com',
       },
     ],
   },
 }
 
 module.exports = nextConfig
+
+
+
+// /** @type {import('next').NextConfig} */
+// const nextConfig = {
+//   reactStrictMode: true,
+//   images: {
+//     domains: ['localhost'],
+//     remotePatterns: [
+//       {
+//         protocol: 'https',
+//         hostname: '**',
+//       },
+//     ],
+//   },
+// }
+
+// module.exports = nextConfig
