@@ -7,18 +7,17 @@ export default function SchoolCard({ school, viewMode = 'grid' }) {
 
   return (
     <div className="card-elevated overflow-hidden transition-all duration-500 hover:scale-105 group">
-      {/* Image Section with Perfect Fit */}
-      <div className={`relative overflow-hidden ${
-        viewMode === 'list' ? 'h-56 aspect-video' : 'h-48 aspect-video'
-      }`}>
-       <Image
-          src={school.image ? `/schoolImages/${school.image}` : '/api/placeholder/400/300'}
+      {/* Image Section - Perfect Fit */}
+      <div className="relative w-full h-48 overflow-hidden">
+        <Image
+          src={school.image || placeholderImage}
           alt={school.name}
           fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className="object-cover group-hover:scale-110 transition-transform duration-700"
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent" />
+        
         {/* Edit Button */}
         <div className="absolute top-4 right-4">
           <Link
