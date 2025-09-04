@@ -11,15 +11,14 @@ export default function SchoolCard({ school, viewMode = 'grid' }) {
       <div className={`relative overflow-hidden ${
         viewMode === 'list' ? 'h-56 aspect-video' : 'h-48 aspect-video'
       }`}>
-        <Image
-          src={school.image || placeholderImage}
+       <Image
+          src={school.image ? `/schoolImages/${school.image}` : '/api/placeholder/400/300'}
           alt={school.name}
           fill
-          sizes={viewMode === 'list' ? '(max-width: 768px) 100vw, 60vw' : '(max-width: 768px) 100vw, 33vw'}
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className="object-cover group-hover:scale-110 transition-transform duration-700"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent" />
-        
         {/* Edit Button */}
         <div className="absolute top-4 right-4">
           <Link
