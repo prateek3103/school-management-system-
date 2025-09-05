@@ -1,40 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+School Management System
+A full-stack web application designed to manage a directory of schools. This project allows users to add, view, update, and delete school listings, complete with image uploads. It is built with a modern tech stack and deployed on Vercel for a seamless, serverless experience.
 
-## Getting Started
+Live Demo
+You can view the live deployed version here: https://eduportal-lemon.vercel.app/
 
-First, run the development server:
+Features
+View Schools: Browse all school listings in a clean, responsive grid or list view.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Add New Schools: A user-friendly form to add new schools to the directory, including details like name, address, contact info, and an image.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Edit Existing Schools: Easily update the information for any school in the directory.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+Delete Schools: Remove schools from the directory with a confirmation step.
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+Image Uploads: School images are handled through a cloud-based media service, ensuring performance and scalability.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+Search & Filter: Quickly find schools by searching for name, city, or state, and filter by city.
+     
+Tech Stack
+This project is built with the following technologies:
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Frontend: Next.js (React Framework) & Tailwind CSS
 
-## Learn More
+Backend: Next.js API Routes (Serverless Functions)
 
-To learn more about Next.js, take a look at the following resources:
+Database: MariaDB SkySQL (Serverless MySQL-compatible database)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+Image Storage: Cloudinary for cloud-based image uploads and delivery.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+Deployment: Vercel
