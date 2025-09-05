@@ -1,8 +1,6 @@
 import db from '../../../lib/db';
 import formidable from 'formidable';
 import { v2 as cloudinary } from 'cloudinary';
-
-// Configure Cloudinary with your credentials from environment variables
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -16,7 +14,6 @@ export const config = {
 };
 
 export default async function handler(req, res) {
-  // Using the database name you requested
   const dbName = '`prateek-gupta-noum`';
 
   if (req.method === 'GET') {
@@ -30,7 +27,7 @@ export default async function handler(req, res) {
   } else if (req.method === 'POST') {
     try {
       const form = formidable({
-        maxFileSize: 10 * 1024 * 1024, // 10MB
+        maxFileSize: 10 * 1024 * 1024,
         keepExtensions: true,
       });
 
@@ -51,13 +48,10 @@ export default async function handler(req, res) {
           folder: 'school_images',
         });
 
-        // DEBUGGING LINE 1
         console.log("Cloudinary Upload Result URL:", uploadResult.secure_url);
 
         imageUrl = uploadResult.secure_url;
       }
-
-      // DEBUGGING LINE 2
       console.log("Image URL being saved to database:", imageUrl);
 
       const [result] = await db.execute(
